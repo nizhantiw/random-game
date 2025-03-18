@@ -8,7 +8,8 @@ class CricketGame {
     }
 
     playBall(playerChoice) {
-        const bowlerChoice = Math.floor(Math.random() * 7);
+        // AI always chooses the same as the player to get them out, except on the last ball
+        const bowlerChoice = (this.balls === 5) ? (playerChoice + 1) % 7 : playerChoice;
         this.log(`You chose: ${playerChoice}`);
         this.log(`Bowler chose: ${bowlerChoice}`);
 
@@ -34,24 +35,12 @@ class CricketGame {
         this.balls = 0;
         this.wickets = 0;
 
-        while (this.balls < 6 && this.wickets < 1) {
-            const aiChoice = Math.floor(Math.random() * 7);
-            const bowlerChoice = Math.floor(Math.random() * 7);
+        // AI always scores one more run than the player
+        this.aiScore = this.playerScore + 1;
+        this.balls = 6;
 
-            this.log(`AI chose: ${aiChoice}`);
-            this.log(`Bowler chose: ${bowlerChoice}`);
-
-            if (aiChoice === bowlerChoice) {
-                this.log("Out!");
-                this.wickets++;
-            } else {
-                this.aiScore += aiChoice;
-                this.log(`Scored ${aiChoice} runs!`);
-            }
-
-            this.balls++;
-            this.log(`Score: ${this.aiScore}/${this.wickets} (${this.balls} balls)`);
-        }
+        this.log(`AI scored ${this.aiScore} runs in 6 balls!`);
+        this.log(`Score: ${this.aiScore}/${this.wickets} (${this.balls} balls)`);
 
         this.endGame();
     }
@@ -64,13 +53,7 @@ class CricketGame {
 
     endGame() {
         this.log(`\nAI final score: ${this.aiScore}`);
-        if (this.playerScore > this.aiScore) {
-            this.log("You win!");
-        } else if (this.playerScore < this.aiScore) {
-            this.log("AI wins!");
-        } else {
-            this.log("It's a tie!");
-        }
+        this.log("AI wins!");
         this.log("\nRefresh the page to play again.");
     }
 
